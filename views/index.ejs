@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>车辆轨迹数据挖掘平台</title>
+</head>
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/all.css">
+<link rel="stylesheet" href="css/ol.css">
+<script src="js/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="js/bootstrap.min.js" type="text/javascript"></script>
+<script src="js/ol.js" type="text/javascript"></script>
+<script src="js/olSourceGoogle.js"></script>
+
+<body >
+<div  id="header"><h1>车辆轨迹数据挖掘平台</h1></div>
+<div id="container">
+  <div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      首页 <span class="caret"></span>
+    </button>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      数据管理 <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <%for(var i=0;i<datamanage.length;i++){%>
+      <li ><a id="<%=datamanageID[i]%>" href="#d<%=i%>" ><%=datamanage[i]%></a></li>
+     <%}%>
+    </ul>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      数据分析 <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <%for(var i=0;i<dataAnalysis.length;i++){%>
+      <li><a id="<%=dataAnalysisID[i]%>" href="#a<%=i%>" ><%=dataAnalysis[i]%></a></li>
+      <%}%>
+    </ul>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      联系我们 <span class="caret"></span>
+    </button>
+  </div>
+</div>
+<div id="map"></div>
+<div class="function" id="d0">
+  <h2 > 定位点查询</h2>
+  <br/>
+  <form id="queryForm" action="/queryRoad/:id" onsubmit="return false;">
+    <label >请输入车牌号码：</label>
+    <select name="selectNum" id="selectNum">
+      <option  >冀HE1803</option>
+      <option  >津AA7513</option>
+      <option  >冀HE1818</option>
+      <option  >冀HK2818</option>
+      <option  >全部</option>
+    </select>
+    <br/> <br/>
+    <label >起始日期：</label>
+    <input type="datetime-local" name="startTime" value="2015-09-24T00:00:00"/><br/><br/>
+    <label >终止日期：</label>
+    <input type="datetime-local" name="endTime"  value="2015-09-24T00:00:00"/><br/><br/>
+    <input id="btnQueryRoad" type="submit" value="查询" >
+  </form>
+</div>
+<div id="d1" class="function" >
+  <h2> 上传轨迹数据</h2>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <label>选择文件:</label>
+    <br>
+    <input type="file" name="multifile"  multiple />
+    <input type="radio" id="showTRA"><br>
+    <label>显示轨迹</label><br>
+    <input type="reset"  value="取消" />
+    <input type="submit"  value="提交" />
+  </form>
+</div>
+
+<div id="a0" class="function"  >
+  <h2  >道路网提取</h2>
+  <form action="" method="post" name="form2">
+    <label>最低速度:</label>
+    <input name="minSpeed" type="text"size="15"/>
+    <label >间隔时间:</label>
+    <input name="timeSpan" type="text"size="15"/>
+    <label>方向差</label>
+    <input name="dirctionDiff" type="text"size="15"/><br><br>
+    <input type="button"  value="提交" />
+    <input type="reset"  value="重置"/>
+  </form>
+</div>
+<div id="a1" class="function"  >
+  <h2 >路况分析</h2>
+  <form action="" method="post" >
+    <label>图层:</label>
+    <select name="select" >
+      <option value="定位点图层" selected="selected">定位点图层</option>
+      <option value="路网图层">路网图层</option>
+    </select>
+    <label>缓冲区大小:</label>
+    <input name="area" type="text"/>
+    <label >最小聚集点数:</label>
+    <input name="number" type="text"/>
+    <br>
+    <br>
+    <input type="button" name="submit" value="提交"  />
+    <input type="reset" name="submit2" value="重置"/>
+  </form>
+</div>
+<div id="a2" class="function" >
+  <h2 >道路名称提取：</h2>
+  <br/>
+  <br/>
+  <label >最小距离:</label><input type="text" >
+  <br/>
+  <br/>
+  <label >方向差：</label><input type="text" >
+  <br/>
+  <br/>
+  <label >最小聚集点数:</label><input type="text" >
+  <br/>
+  <br/>
+  <label >关键词:</label><input type="text" >
+  <br/>
+  <br/>
+  <input type="button" name="submit" value="提交"  />
+  <input type="reset" name="submit2" value="重置"/>
+</div>
+<div id="a3" class="function" >
+  <h2 >停车场位置提取</h2>
+  <form action="" method="post" >
+    <label>图层:</label>
+    <select name="select" >
+      <option value="定位点图层" selected="selected">定位点图层</option>
+      <option value="路网图层">路网图层</option>
+    </select>
+    <br/>
+    <br/>
+    <label >邻域大小:</label>
+    <input name="area" type="text"/>
+    <br/>
+    <br/>
+    <label >最小聚集点数:</label>
+    <input name="number" type="text"/>
+    <br/>
+    <br/>
+    <input type="button" name="submit" value="提交"  />
+    <input type="reset" name="submit2" value="重置"/>
+  </form>
+</div>
+<div id="mapOperation">
+  <div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      测量工具 <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li id="long" class="measure"><a >长度测量</a></li>
+      <li id="area" class="measure"><a >面积测量</a></li>
+      <li id="clearMeasure"><a >清除</a></li>
+    </ul>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      底图切换 <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li id="mapBaidu" class="map"><a >百度地图</a></li>
+      <li id="mapGoogle" class="map"><a >谷歌地图</a></li>
+      <li id="mapGaode"class="map"><a >高德地图</a></li>
+      <li id="roadNet" class="roadNet"> <a >道路网</a></li>
+    </ul>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      其它功能 <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+      <li class="taceBack"><a >轨迹回放</a></li>
+      <li><a >POI下载</a></li>
+    </ul>
+  </div>
+</div>
+<script>
+
+  var osmLayer=new ol.layer.Tile({
+    source:new ol.source.OSM()
+  });
+  var map = new ol.Map({
+    target: 'map', //地图容器div的ID
+    //地图容器中加载的图层
+    layers: [
+      osmLayer
+    ],
+    //地图视图设置
+    view: new ol.View({
+      center:  [12961071.024648039,4810341.712877603],
+      zoom: 18
+    })
+  });
+  var scaleLineControl = new ol.control.ScaleLine({
+    units: 'metric',
+    target: 'scalebar',
+    className: 'ol-scale-line'
+  });
+  map.addControl(scaleLineControl);
+</script>
+</body>
+<script src="js/map.js" type="text/javascript"></script>
+<script src="js/event.js" type="text/javascript"></script>
+</html>

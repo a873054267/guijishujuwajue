@@ -1,0 +1,146 @@
+*{
+    margin:0px;
+    padding: 0px;
+}
+body{
+    width:100%;
+    height: 100%;
+    overflow: hidden;
+    background-image: url("/images/timg.jpg");
+}
+#header{
+    position: absolute;
+    top:1%;
+    left:30%;
+    right:30%;
+    background-image: -webkit-linear-gradient(left,blue,#66ffff 10%,#cc00ff 20%,#CC00CC 30%, #CCCCFF 40%, #00FFFF 50%,#CCCCFF 60%,#CC00CC 70%,#CC00FF 80%,#66FFFF 90%,blue 100%);
+    -webkit-text-fill-color: transparent;/* 将字体设置成透明色 */
+    -webkit-background-clip: text;/* 裁剪背景图，使文字作为裁剪区域向外裁剪 */
+    -webkit-background-size: 200% 100%;
+    -webkit-animation: masked-animation 4s linear infinite;
+    font-size: 35px;
+}
+@keyframes masked-animation {
+    0% {
+        background-position: 0  0;
+    }
+    100% {
+        background-position: -100%  0;
+    }
+}
+#header h1{
+    text-align: center;
+    font-size: 50px;
+    color: white;
+}
+#container{
+    position: absolute;
+    top: 11%;
+    left:30%;
+    right:30%;
+}
+#container div{
+    padding: 4px 5%;
+    float: left;
+    width: 25%;
+    height: 43px;
+
+}
+@keyframes masked-animation {
+    0% {
+        background-position: 0  0;
+    }
+    100% {
+        background-position: -100%  0;
+    }
+}
+#map{
+    position: absolute;
+    top: 20%;
+    float:left;
+    width:80%;
+    height: 80%;;
+}
+.function{
+    padding: 0px 5px;
+    float: right;
+    position: absolute;
+    top: 20%;
+    right: 0px;
+    width: 20%;
+    height: 35%;
+    display: none;
+}
+label{
+    color: white;
+    width: 40%;
+    text-align: center;
+}
+h2{
+    color: white;
+}
+input[value="查询"]{
+    position: absolute;
+    right: 5%;
+    width: 20%;
+    height: 10%;
+}
+.function:target{display:block;}
+input[type="file"]{
+    position: absolute;
+    float: right;
+}
+input[value="提交"]{
+    position: absolute;
+    right: 20%;
+    width: 15%;
+    height: 7%;
+    border-bottom: 0px;
+}
+input[value="重置"]{
+    position: absolute;
+    left: 20%;
+    width: 15%;
+    height: 7%;
+    border-bottom: 0px;
+}
+#mapOperation{
+    position: absolute;
+    top: 11%;
+    right:0px;
+    width: 20%;
+    height: 5%;
+}
+#mapOperation div{
+    padding: 4px 5%;
+    float: left;
+    width: 30%;
+    height: 43px;
+
+}
+.tooltip {
+    position: relative;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    color: white;
+    padding: 4px 8px;
+    opacity: 0.7;
+    white-space: nowrap;
+}
+
+.tooltip-measure {
+    opacity: 1;
+    font-weight: bold;
+}
+.shutUp{
+    position: absolute;
+    top: 20px;
+    right: 6px;
+    width: 10%;
+    height:10%;
+}
+#close :hover{
+    filter:alpha(Opacity=80);
+
+}
+

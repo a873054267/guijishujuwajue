@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Marker Animation</title>
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
+    <script src="func.js"></script>
+</head>
+<body>
+<div id="map" class="map"></div>
+<label for="speed">
+    speed:&nbsp;
+    <input id="speed" type="range" min="10" max="999" step="10" value="60">
+</label>
+<button id="start-animation">Start Animation</button>
+<script>
+    // This long string is placed here due to jsFiddle limitations.
+    // It is usually loaded with AJAX.
+    var routeCoords=[];
+    routeCoords=[[12961071.024648039,4810341.712877603],[12961142.36930969,4810386.366107735],[12961116.042250117,4810522.538014139],[12961099.054895822,4810536.309933854],[12961094.813623222,4810536.309933854],[12961094.813623222,4810536.309933854],[12961094.813623222,4810536.309933854]];
+
+    console.log(routeCoords);
+    var route = new ol.geom.LineString(routeCoords);
+    var routeCoords = route.getCoordinates();
+    var routeLength = routeCoords.length;
+    console.log(route.getLength());
+
+    var routeFeature = new ol.Feature({
+        type: 'route',
+        geometry: route
+    });
+    var geoMarker = new ol.Feature({
+        type: 'geoMarker',
+        geometry: new ol.geom.Point(routeCoords[0])
+    });
+    var startMarker = new ol.Feature({
+        type: 'icon',
+        geometry: new ol.geom.Point(routeCoords[0])
+    });
+    var endMarker = new ol.Feature({
+        type: 'icon',
+        geometry: new ol.geom.Point(routeCoords[routeLength - 1])
+    });
+
+    var styles = {
+        'route': new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                width: 6, color: [237, 212, 0, 0.8]
+            })
+        }),
+        'icon': new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                src: 'https://openlayers.org/en/v4.6.5/examples/data/icon.png'
+            })
+        }),
+        'geoMarker': new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 7,
+                snapToPixel: false,
+                fill: new ol.style.Fill({color: 'black'}),
+                stroke: new ol.style.Stroke({
+                    color: 'white', width: 2
+                })
+            })
+        })
+    };
+
+    var animating = false;
+    var speed=0.2;
+    var startButton = document.getElementById('start-animation');
+
+    var vectorLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            features: [routeFeature, geoMarker, startMarker, endMarker]
+        })
+
+    });
+
+    var center = [12961071.024648039,4810341.712877603];
+    var map = new ol.Map({
+        target: document.getElementById('map'),
+        loadTilesWhileAnimating: true,
+        view: new ol.View({
+            center: center,
+            zoom: 10,
+            minZoom: 2,
+            maxZoom: 19
+        }),
+        layers: [
+            vectorLayer
+        ]
+    });
+
+    startButton.addEventListener('click', startAnimation, false);
+</script>
+</body>
+</html>

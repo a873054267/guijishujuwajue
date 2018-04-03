@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>添加点要素</title>
+    <style type="text/css">
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
+<script type="text/javascript">
+    var osmLayer=new ol.layer.Tile({
+        source:new ol.source.OSM()
+    });
+    var map = new ol.Map({
+        view: new ol.View({
+            center: [116.7153520339493,40.16370227895149],
+            zoom: 9, // resolution
+            maxZoom: 19
+        }),
+        target: 'map'
+    });
+    var url = 'http://localhost:8080/geoserver/wsf/wms';
+    var polygon = ol.geom.Polygon.fromExtent(map.getView().calculateExtent(map.getSize()));
+    // ol.format.filter.contains('', polygon, 'EPSG:3857')
+    var featureRequest = new ol.format.WFS().writeGetFeature({
+        srsName: 'EPSG:3857',
+        featureNS: 'www.12354.com',
+        featurePrefix: 'osm',
+        featureTypes: ['wsf:Beijing_Polyline_WGS'],
+        outputFormat: 'application/json',
+        filter: ol.format.filter.bbox('', map.getView().calculateExtent(map.getSize()), 'EPSG:3857')
+    });
+    var filter = new XMLSerializer().serializeToString(featureRequest);
+    var vectorSource = new ol.source.Vector({
+        format: new ol.format.GeoJSON(),
+        loader: function(extent, resolution, projection) {
+            fetch(url, {
+                method: 'POST',
+                body: filter
+            }).then(function(response) {
+                return response.json();
+            }).then(function(json) {
+                vectorSource.addFeatures(
+                        vectorSource.getFormat().readFeatures(json))
+            }).catch(function (error) {
+                vectorSource.removeLoadedExtent(extent);
+            })
+        },
+        strategy: ol.loadingstrategy.bbox
+    });
+    var vectorLayer = new ol.layer.Vector({
+        source: vectorSource,
+        style: new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction'
+            }),
+            stroke: new ol.style.Stroke({
+                color: '#F43737',
+                lineDashOffset: '0',
+                miterLimit: 10,
+                width: 2
+            })
+        })
+    });
+    map.addLayer(vectorLayer);
+</script>
+</body>
+</html>
